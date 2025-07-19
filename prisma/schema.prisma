@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Group {
+  id          Int          @id @default(autoincrement()) @map("id")
+  name        String       @map("name")
+  chatId      String       @unique @map("chat_id")
+  coordinates Coordinate[] @relation("group_coordinates")
+  errors      Error[]      @relation("group_erros")
+
+  @@map("group")
+}
+
+model Coordinate {
+  id           Int       @id @default(autoincrement()) @map("id")
+  imagePath    String?   @map("image_path")
+  long         String    @map("long")
+  lat          String    @map("lat")
+  groupId      Int?      @map("group_id")
+  address      String?   @map("address")
+  urlId        String?   @map("url_id")
+  group        Group?    @relation("group_coordinates", fields: [groupId], references: [id])
+  isAccepted   Boolean   @default(false) @map("is_accepted")
+  isReject     Boolean   @default(false) @map("is_reject")
+  photoTakenAt DateTime  @default(now()) @map("photo_taken_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime? @updatedAt @map("updated_at")
+
+  @@map("coordinate")
+}
+
+model Error {
+  id      Int     @id @default(autoincrement()) @map("id")
+  url     String  @map("url")
+  done    Boolean @default(false) @map("done")
+  groupId Int?    @map("group_id")
+  group   Group?  @relation("group_erros", fields: [groupId], references: [id])
+
+  @@map("error")
+}
