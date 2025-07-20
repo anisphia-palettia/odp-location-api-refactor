@@ -15,6 +15,10 @@ coordinateRoute.get("", async (c) => {
 coordinateRoute.get("/:id", async (c) => {
     const id = c.req.param("id")
     const coordinate = await CoordinateService.getById(Number(id));
+    return sendSuccess(c, {
+        message: "Success get the coordinate",
+        data: coordinate
+    })
 })
 
 export default coordinateRoute
