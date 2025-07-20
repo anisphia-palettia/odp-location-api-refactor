@@ -1,17 +1,19 @@
-import {Hono} from "hono";
+import { Hono } from "hono";
 import groupRoute from "@/modules/group";
 import coordinateRoute from "@/modules/coordinate";
-import {errorHandler, loggerRequest} from "@/middleware";
+import { errorHandler, loggerRequest } from "@/middleware";
 import webhookWhatsappRoute from "@/modules/webhook";
+import { serveStatic } from "@hono/node-server/serve-static";
 
-const app = new Hono().basePath("/api")
+const apiApp = new Hono().basePath("/api");
+apiApp.use(loggerRequest);
+apiApp.route("/group", groupRoute);
+apiApp.route("/coordinate", coordinateRoute);
+apiApp.route("/web-hook", webhookWhatsappRoute);
 
-app.use(loggerRequest);
-
-app.route("/group", groupRoute)
-app.route("/coordinate", coordinateRoute)
-app.route("/web-hook", webhookWhatsappRoute)
-
+const app = new Hono();
+app.use("/public/*", serveStatic({ root: "./" }));
+app.route("", apiApp);
 app.onError(errorHandler)
 
-export default app
+export default app;
