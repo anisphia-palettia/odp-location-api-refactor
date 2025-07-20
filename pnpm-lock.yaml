@@ -29,6 +29,9 @@ importers:
       hono:
         specifier: ^4.8.0
         version: 4.8.5
+      odp-location-api:
+        specifier: 'link:'
+        version: 'link:'
       pino:
         specifier: ^9.7.0
         version: 9.7.0

@@ -2,7 +2,7 @@ import {zValidator} from "@hono/zod-validator";
 import type {ValidationTargets} from "hono";
 import {ZodMiniObject} from "zod/mini";
 
-export default function zodValidate(
+export function zodValidate(
     target: keyof ValidationTargets,
     schema: ZodMiniObject
 ) {

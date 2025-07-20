@@ -1,0 +1,1 @@
+ALTER TABLE "coordinate" RENAME COLUMN "image_path" TO "image_name";

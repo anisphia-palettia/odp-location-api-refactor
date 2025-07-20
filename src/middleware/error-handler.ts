@@ -6,13 +6,14 @@ import {HTTPException} from "hono/http-exception";
 
 const isDev = EnvConfig.NODE_ENV === "development";
 
-export default function errorHandler(error: any, c: Context) {
+export function errorHandler(error: any, c: Context) {
     if (error instanceof ZodError) {
         return sendError(c, {
             status: 400,
             message: "Validation error",
-            detail: error.errors.map((err) => ({
-                path: err.path.join("."),
+            detail: error.issues.map((err) => ({
+                code: err.code,
+                path: err.path,
                 message: err.message,
             })),
         });

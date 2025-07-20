@@ -20,7 +20,7 @@ model Group {
 
 model Coordinate {
   id           Int       @id @default(autoincrement()) @map("id")
-  imagePath    String?   @map("image_path")
+  imageName    String?   @map("image_name")
   long         String    @map("long")
   lat          String    @map("lat")
   groupId      Int?      @map("group_id")

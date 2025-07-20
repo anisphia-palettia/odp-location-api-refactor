@@ -19,6 +19,10 @@ export const GroupService = {
         return db.group.findMany({where: {chatId}})
     },
 
+    async getByChatId(chatId: string) {
+        return db.group.findUnique({where: {chatId}})
+    },
+
     async getSummary() {
         const coordinateCounts = await db.coordinate.groupBy({
             by: ['groupId'],
@@ -48,5 +52,16 @@ export const GroupService = {
         results.sort((a, b) => a.name.localeCompare(b.name));
 
         return results;
-    }
+    },
+
+    async getGroupCoordinatesById(id: number) {
+        return db.group.findUnique({
+            where: {id},
+            include: {
+                coordinates: {
+                    orderBy: {photoTakenAt: "asc"},
+                },
+            },
+        });
+    },
 }

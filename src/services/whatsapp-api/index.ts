@@ -1,3 +1,2 @@
-import * as chat from "./chat"
-
-export default {chat};
+export * from "./chat"
+export * from "./message"
