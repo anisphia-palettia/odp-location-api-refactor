@@ -1,6 +1,6 @@
 const BasePath = {
     chats: "/chats",
-    message: "/messages",
+    message: "/message",
 }
 
 export default BasePath;
