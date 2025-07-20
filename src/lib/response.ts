@@ -48,7 +48,7 @@ export function sendError(
         status: ContentfulStatusCode;
     }
 ) {
-    logger.error("ERROR", message, stack);
+    logger.error(message);
     return c.json<ResponseError>(
         {
             success: false,
