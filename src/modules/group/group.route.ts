@@ -1,9 +1,11 @@
 import {Hono} from "hono";
 import {sendError, sendSuccess} from "@/lib/response";
-import {GroupCreateBody, GroupSchema} from "@/modules/group/group.schema";
+import {GroupCreateBody, GroupSchema, GroupUpdateBody} from "@/modules/group/group.schema";
 import {GroupService} from "./group.service"
 import {zodValidate} from "@/middleware";
 import {groupByChatId, groupChats} from "@/services/whatsapp-api";
+import {Prisma} from "@/generated/prisma";
+import GroupUpdateInput = Prisma.GroupUpdateInput;
 
 const groupRoute = new Hono()
 
@@ -70,6 +72,54 @@ groupRoute.get("/whatsapp-group-chats", async (c) => {
     })
 })
 
+groupRoute.put("/:id", zodValidate("json", GroupSchema.update), async (c) => {
+    const id = Number(c.req.param("id"))
+    const {show} = c.req.valid("json") as GroupUpdateInput;
+
+    const groupExist = await GroupService.findById(id);
+    if (!groupExist) {
+        return sendError(c, {
+            message: "Group not found",
+            status: 404,
+        });
+    }
+
+    const data = {
+        show: show,
+    }
+
+    const result = await GroupService.updateById(id, data)
+
+    return sendSuccess(c, {
+        message: "Success update group by id",
+        data: result,
+    })
+})
+
+groupRoute.delete("/:id", async (c) => {
+    const id = Number(c.req.param("id"))
+    if (isNaN(id)) {
+        return sendError(c, {
+            message: "Invalid group id",
+            status: 400,
+        });
+    }
+
+    const groupExist = await GroupService.findById(id);
+    if (!groupExist) {
+        return sendError(c, {
+            message: "Group not found",
+            status: 404,
+        });
+    }
+    await GroupService.deleteById(id)
+
+    return sendSuccess(c, {
+        message: "Success delete group by id",
+        data: groupExist
+    })
+})
+
 groupRoute.get("/:id/coordinates", async (c) => {
     const id = Number(c.req.param("id"));
     if (isNaN(id)) {
@@ -79,7 +129,7 @@ groupRoute.get("/:id/coordinates", async (c) => {
         });
     }
 
-    const groupExist = await GroupService.findById(id); // <-- Ganti findByChatId jadi findById
+    const groupExist = await GroupService.findById(id);
     if (!groupExist) {
         return sendError(c, {
             message: "Group not found",

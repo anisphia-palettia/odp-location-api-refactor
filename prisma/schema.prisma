@@ -12,6 +12,7 @@ model Group {
   id          Int          @id @default(autoincrement()) @map("id")
   name        String       @map("name")
   chatId      String       @unique @map("chat_id")
+  show        Boolean      @default(true)
   coordinates Coordinate[] @relation("group_coordinates")
   errors      Error[]      @relation("group_erros")
 
