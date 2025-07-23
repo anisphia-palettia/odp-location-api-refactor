@@ -118,7 +118,9 @@ groupRoute.delete("/:id", async (c) => {
             status: 404,
         });
     }
-    await GroupService.deleteById(id)
+    await GroupService.updateById(id, {
+        show : false
+    })
 
     return sendSuccess(c, {
         message: "Success delete group by id",
