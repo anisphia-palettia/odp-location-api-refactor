@@ -1,15 +1,16 @@
-import { Hono } from "hono";
-import { WhatsAppWebhookMessage } from "@/types/whastapp-webhook";
-import { sendSuccess } from "@/lib/response";
-import { getCoordinatesFromPage } from "@/services/scraper";
-import { notifyRecipient } from "@/services/whatsapp-api";
-import { ErrorService } from "@/modules/error";
-import { GroupService } from "@/modules/group";
+import {Hono} from "hono";
+import {WhatsAppWebhookMessage} from "@/types/whastapp-webhook";
+import {sendSuccess} from "@/lib/response";
+import {getCoordinatesFromPage} from "@/services/scraper";
+import {notifyRecipient} from "@/services/whatsapp-api";
+import {ErrorService} from "@/modules/error";
+import {GroupService} from "@/modules/group";
 import path from "node:path";
-import { EnvConfig } from "@/config/env.config";
-import { saveFileFromUrl } from "@/services/save-file-from-url";
-import { CoordinateService } from "@/modules/coordinate";
-import { logger } from "@/lib/logger";
+import {EnvConfig} from "@/config/env.config";
+import {saveFileFromUrl} from "@/services/save-file-from-url";
+import {CoordinateService} from "@/modules/coordinate";
+import {logger} from "@/lib/logger";
+import {v4 as uuidv4} from "uuid";
 
 const webhookWhatsappRoute = new Hono();
 
@@ -18,7 +19,7 @@ webhookWhatsappRoute.post("", async (c) => {
     try {
         payload = await c.req.json<WhatsAppWebhookMessage>();
     } catch (err) {
-        logger.error({ err }, "Gagal parsing JSON payload");
+        logger.error({err}, "Gagal parsing JSON payload");
         return sendSuccess(c, {
             message: "Gagal parsing JSON payload",
             data: null,
@@ -122,7 +123,7 @@ webhookWhatsappRoute.post("", async (c) => {
     }
 
     const ext = path.extname(payload.mediaPath) || ".jpg";
-    const fileName = `${coordinates.lat}_${coordinates.long}${ext}`;
+    const fileName = `${uuidv4()}${ext}`;
     const safeName = payload.name.replace(/[^a-zA-Z0-9-_]/g, "_");
     const relativeFilePath = path.join(safeName, fileName);
     const mediaUrl = EnvConfig.WHATSAPP_SERVICE_URL + `/${payload.mediaPath}`;
@@ -131,7 +132,7 @@ webhookWhatsappRoute.post("", async (c) => {
 
     let fullPath;
     try {
-        ({ fullPath } = await saveFileFromUrl(mediaUrl, relativeFilePath));
+        ({fullPath} = await saveFileFromUrl(mediaUrl, relativeFilePath));
     } catch (err) {
         logger.error("Error: gagal menyimpan file dari URL");
         return sendSuccess(c, {
