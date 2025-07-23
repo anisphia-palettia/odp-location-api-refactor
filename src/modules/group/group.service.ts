@@ -17,7 +17,7 @@ export const GroupService = {
     },
 
     async findByChatId(chatId: string) {
-        return db.group.findMany({where: {chatId}});
+        return db.group.findFirst({where: {chatId}});
     },
 
     async getByChatId(chatId: string) {

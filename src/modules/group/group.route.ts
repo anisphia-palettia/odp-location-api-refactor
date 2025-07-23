@@ -26,9 +26,11 @@ groupRoute.post(
         const groupExist = await GroupService.findByChatId(chatId);
 
         if (groupExist) {
-            return sendError(c, {
-                message: "Group already exists in database",
-                status: 409,
+            await GroupService.updateById(groupExist.id, {show : true})
+            console.log("====> update")
+            return sendSuccess(c, {
+                message: "Success update group",
+                status: 200,
             });
         }
 
@@ -65,10 +67,14 @@ groupRoute.get("/summary", async (c) => {
 })
 
 groupRoute.get("/whatsapp-group-chats", async (c) => {
-    const response = await groupChats().then(data => (data.data))
+    const groups = await GroupService.getAll()
+        const response = await groupChats().then(data => data.data);
+    const existingChatIds = new Set(groups.map(g => g.chatId));
+        const filteredGroups = response?.filter(g => !existingChatIds.has(g.id)); 
+
     return sendSuccess(c, {
         message: "Success get whatsapp-group-chats",
-        data: response
+        data: filteredGroups
     })
 })
 
