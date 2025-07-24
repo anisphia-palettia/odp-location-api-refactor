@@ -27,7 +27,6 @@ groupRoute.post(
 
         if (groupExist) {
             await GroupService.updateById(groupExist.id, {show: true})
-            console.log("====> update")
             return sendSuccess(c, {
                 message: "Success update group",
                 status: 200,
