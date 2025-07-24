@@ -75,6 +75,9 @@ export const GroupService = {
             where: {id},
             include: {
                 coordinates: {
+                    where: {
+                        isAccepted: true
+                    },
                     orderBy: {photoTakenAt: "asc"},
                 },
             },
