@@ -70,13 +70,13 @@ export const GroupService = {
         return results;
     },
 
-    async getGroupCoordinatesById(id: number) {
+    async getGroupCoordinatesById(id: number, {accepted}: { accepted: boolean }) {
         return db.group.findUnique({
             where: {id},
             include: {
                 coordinates: {
                     where: {
-                        isAccepted: true
+                        isAccepted: accepted
                     },
                     orderBy: {photoTakenAt: "asc"},
                 },

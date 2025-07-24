@@ -26,7 +26,7 @@ groupRoute.post(
         const groupExist = await GroupService.findByChatId(chatId);
 
         if (groupExist) {
-            await GroupService.updateById(groupExist.id, {show : true})
+            await GroupService.updateById(groupExist.id, {show: true})
             console.log("====> update")
             return sendSuccess(c, {
                 message: "Success update group",
@@ -68,9 +68,9 @@ groupRoute.get("/summary", async (c) => {
 
 groupRoute.get("/whatsapp-group-chats", async (c) => {
     const groups = await GroupService.getAll()
-        const response = await groupChats().then(data => data.data);
+    const response = await groupChats().then(data => data.data);
     const existingChatIds = new Set(groups.map(g => g.chatId));
-        const filteredGroups = response?.filter(g => !existingChatIds.has(g.id)); 
+    const filteredGroups = response?.filter(g => !existingChatIds.has(g.id));
 
     return sendSuccess(c, {
         message: "Success get whatsapp-group-chats",
@@ -119,7 +119,7 @@ groupRoute.delete("/:id", async (c) => {
         });
     }
     await GroupService.updateById(id, {
-        show : false
+        show: false
     })
 
     return sendSuccess(c, {
@@ -129,6 +129,7 @@ groupRoute.delete("/:id", async (c) => {
 })
 
 groupRoute.get("/:id/coordinates", async (c) => {
+    const {accepted} = c.req.query()
     const id = Number(c.req.param("id"));
     if (isNaN(id)) {
         return sendError(c, {
@@ -145,7 +146,7 @@ groupRoute.get("/:id/coordinates", async (c) => {
         });
     }
 
-    const groupWithCoordinates = await GroupService.getGroupCoordinatesById(id);
+    const groupWithCoordinates = await GroupService.getGroupCoordinatesById(id, {accepted: Boolean(accepted)});
     return sendSuccess(c, {
         message: "Success get group coordinates",
         data: groupWithCoordinates,
