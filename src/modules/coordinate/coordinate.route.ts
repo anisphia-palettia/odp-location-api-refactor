@@ -27,6 +27,10 @@ coordinateRoute.put("/:id", zodValidate("json", CoordinateSchema.update), async 
     const id = c.req.param("id")
     const data = c.req.valid("json") as CoordinateUpdateBody
     await CoordinateService.updateById(Number(id), data)
+    return sendSuccess(c, {
+        message: "Success update coordinate",
+        data: data,
+    })
 })
 
 export default coordinateRoute
