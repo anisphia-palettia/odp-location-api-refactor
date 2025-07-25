@@ -35,7 +35,7 @@ model Coordinate {
   groupId Int?   @map("group_id")
   group   Group? @relation("group_coordinates", fields: [groupId], references: [id])
   tiangId Int?
-  Tiang   Tiang? @relation(fields: [tiangId], references: [id])
+  tiang   Tiang? @relation(fields: [tiangId], references: [id])
 
   @@map("coordinate")
 }

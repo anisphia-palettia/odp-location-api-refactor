@@ -79,6 +79,9 @@ export const GroupService = {
                         isAccepted: accepted
                     },
                     orderBy: {photoTakenAt: "asc"},
+                    include: {
+                        tiang: true
+                    }
                 },
             },
         });
