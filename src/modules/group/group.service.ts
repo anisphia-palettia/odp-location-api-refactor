@@ -71,6 +71,7 @@ export const GroupService = {
     },
 
     async getGroupCoordinatesById(id: number, {accepted}: { accepted: boolean }) {
+        console.log(typeof accepted);
         return db.group.findUnique({
             where: {id},
             include: {

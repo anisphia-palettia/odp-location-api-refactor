@@ -6,6 +6,7 @@ import {zodValidate} from "@/middleware";
 import {groupByChatId, groupChats} from "@/services/whatsapp-api";
 import {Prisma} from "@/generated/prisma";
 import GroupUpdateInput = Prisma.GroupUpdateInput;
+import {parseBoolean} from "@/helper/parse-boolean";
 
 const groupRoute = new Hono()
 
@@ -137,6 +138,15 @@ groupRoute.get("/:id/coordinates", async (c) => {
         });
     }
 
+    const parsedAccepted = parseBoolean(accepted);
+
+    if (parsedAccepted === undefined) {
+        return sendError(c, {
+            message: "Invalid 'accepted' value. Must be 'true' or 'false'.",
+            status: 400,
+        });
+    }
+
     const groupExist = await GroupService.findById(id);
     if (!groupExist) {
         return sendError(c, {
@@ -145,7 +155,7 @@ groupRoute.get("/:id/coordinates", async (c) => {
         });
     }
 
-    const groupWithCoordinates = await GroupService.getGroupCoordinatesById(id, {accepted: Boolean(accepted)});
+    const groupWithCoordinates = await GroupService.getGroupCoordinatesById(id, {accepted: parsedAccepted});
     return sendSuccess(c, {
         message: "Success get group coordinates",
         data: groupWithCoordinates,
