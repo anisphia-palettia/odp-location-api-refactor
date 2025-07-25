@@ -5,7 +5,8 @@ export const CoordinateSchema = {
         photoTakenAt: z.optional(z.string().check(z.refine(val => !val || !isNaN(Date.parse(val)), {
             message: "Invalid date format"
         }))),
-        tiangId: z.nullable(z.optional(z.number())),
+        tiangId: z.optional(z.number()),
+        address: z.optional(z.string()),
     })
 }
 
