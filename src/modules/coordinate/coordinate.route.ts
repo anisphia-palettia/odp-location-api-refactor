@@ -26,10 +26,10 @@ coordinateRoute.get("/:id", async (c) => {
 coordinateRoute.put("/:id", zodValidate("json", CoordinateSchema.update), async (c) => {
     const id = c.req.param("id")
     const data = c.req.valid("json") as CoordinateUpdateBody
-    await CoordinateService.updateById(Number(id), data)
+    const response = await CoordinateService.updateById(Number(id), data)
     return sendSuccess(c, {
         message: "Success update coordinate",
-        data: data,
+        data: response
     })
 })
 
