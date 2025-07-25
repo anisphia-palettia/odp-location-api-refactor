@@ -5,7 +5,7 @@ export const GroupSchema = {
         chatId: z.string().check(z.minLength(1))
     }),
     update: z.object({
-        show: z.nullable(z.optional(z.boolean()))
+        show: z.optional(z.boolean())
     }),
 }
 

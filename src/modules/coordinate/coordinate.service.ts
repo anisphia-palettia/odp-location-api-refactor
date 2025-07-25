@@ -1,6 +1,7 @@
 import {db} from "@/services/db";
 import {Prisma} from "@/generated/prisma";
 import CoordinateCreateInput = Prisma.CoordinateCreateInput;
+import {CoordinateUpdateBody} from "@/modules/coordinate/coordinate.schema";
 
 export const CoordinateService = {
     async getAll() {
@@ -26,4 +27,11 @@ export const CoordinateService = {
             },
         });
     },
+
+    async updateById(id: number, data: CoordinateUpdateBody) {
+        return db.coordinate.update({
+            where: {id},
+            data
+        })
+    }
 }
