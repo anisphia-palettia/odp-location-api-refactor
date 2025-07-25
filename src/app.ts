@@ -5,11 +5,13 @@ import { errorHandler, loggerRequest } from "@/middleware";
 import webhookWhatsappRoute from "@/modules/webhook";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { cors } from "hono/cors";
+import tiangRoute from "@/modules/tiang";
 
 const apiApp = new Hono().basePath("/api");
 apiApp.use(loggerRequest);
 apiApp.route("/group", groupRoute);
 apiApp.route("/coordinate", coordinateRoute);
+apiApp.route("/tiang", tiangRoute)
 apiApp.route("/web-hook", webhookWhatsappRoute);
 
 const app = new Hono();
