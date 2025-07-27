@@ -25,7 +25,7 @@ model Coordinate {
   long         String    @map("long")
   lat          String    @map("lat")
   address      String?   @map("address")
-  urlId        String?   @map("url_id")
+  photoCode    String?   @map("photo_code")
   isAccepted   Boolean   @default(false) @map("is_accepted")
   isReject     Boolean   @default(false) @map("is_reject")
   photoTakenAt DateTime  @default(now()) @map("photo_taken_at")

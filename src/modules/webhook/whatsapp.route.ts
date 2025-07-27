@@ -1,7 +1,7 @@
 import {Hono} from "hono";
 import {WhatsAppWebhookMessage} from "@/types/whastapp-webhook";
 import {sendSuccess} from "@/lib/response";
-import {getCoordinatesFromPage} from "@/services/scraper";
+import {getMetadataFromPage} from "@/services/scraper";
 import {notifyRecipient} from "@/services/whatsapp-api";
 import {ErrorService} from "@/modules/error";
 import {GroupService} from "@/modules/group";
@@ -102,7 +102,7 @@ webhookWhatsappRoute.post("", async (c) => {
 
     let coordinates;
     try {
-        coordinates = await getCoordinatesFromPage(normalizedLink);
+        coordinates = await getMetadataFromPage(normalizedLink);
     } catch (err) {
         logger.error("Error: gagal mengambil koordinat dari halaman");
         await notifyRecipient(`Terjadi kesalahan saat mencoba mengambil koordinat dari link:\n${normalizedLink}`, payload);
@@ -154,7 +154,7 @@ webhookWhatsappRoute.post("", async (c) => {
     const normalizedPath = fullPath.replace(/\\/g, "/");
     const imageUrl = `https://odp.tridatafiber.com/${normalizedPath}`;
 
-    const responseText = `✅ Berhasil menyimpan lokasi dan gambar\n\n*Koordinat* : ${coordinates.lat}, ${coordinates.long}\n*Alamat* : ${coordinates.address}\n*UrlId* : ${coordinates.urlId}\n\n*Gambar* : ${imageUrl}\n\n====================`;
+    const responseText = `✅ Berhasil menyimpan lokasi dan gambar\n\n*Koordinat* : ${coordinates.lat}, ${coordinates.long}\n*Alamat* : ${coordinates.address}\n*UrlId* : ${coordinates.photoCode}\n\n*Gambar* : ${imageUrl}\n\n====================`;
 
     logger.info("Berhasil menyimpan lokasi dan gambar, notifikasi ke user");
 
@@ -162,7 +162,6 @@ webhookWhatsappRoute.post("", async (c) => {
         await notifyRecipient(responseText, payload);
     } catch (err) {
         logger.error("Error: gagal mengirim notifikasi ke user");
-        // Lanjut, tidak perlu return error ke client
     }
 
     return sendSuccess(c, {

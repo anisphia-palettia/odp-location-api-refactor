@@ -23,7 +23,8 @@ export const CoordinateService = {
                 address: data.address,
                 lat: data.lat,
                 long: data.long,
-                urlId: data.urlId,
+                photoCode: data.photoCode,
+                photoTakenAt: data.photoTakenAt,
             },
         });
     },
