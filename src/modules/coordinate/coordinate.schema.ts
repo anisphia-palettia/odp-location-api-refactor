@@ -1,4 +1,4 @@
-import { z } from "zod";
+import {z} from "zod";
 
 export const CoordinateSchema = {
     update: z.object({
@@ -9,6 +9,7 @@ export const CoordinateSchema = {
             .optional(),
         tiangId: z.number().optional(),
         address: z.string().optional(),
+        photoCode: z.string().optional(),
     })
 };
 
