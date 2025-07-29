@@ -8,8 +8,8 @@ import {HTTPException} from "hono/http-exception";
 const generateRoute = new Hono()
 
 generateRoute.post("", zodValidate("json", GenerateSchema.create), async (c) => {
-    const {urlId} = c.req.valid("json") as GenerateCreateBody;
-    const response = await getMetadataFromPage(`https://timemark.com/s/${urlId}/8`);
+    const {photoCode} = c.req.valid("json") as GenerateCreateBody;
+    const response = await getMetadataFromPage(`https://timemark.com/s/${photoCode}/8`);
 
     if (!response) {
         throw new HTTPException(400, {message: "Data tidak berhasil di temukan atau url tidak valid"});

@@ -1,10 +1,10 @@
 import {zValidator} from "@hono/zod-validator";
 import type {ValidationTargets} from "hono";
-import {ZodMiniObject} from "zod/mini";
+import {ZodObject} from "zod";
 
 export function zodValidate(
     target: keyof ValidationTargets,
-    schema: ZodMiniObject
+    schema: ZodObject
 ) {
     return zValidator(target, schema, (result, c) => {
         if (!result.success) {
