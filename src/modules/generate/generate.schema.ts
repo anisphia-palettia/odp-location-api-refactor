@@ -1,9 +1,9 @@
-import {z} from "zod/mini";
+import { z } from "zod";
 
 export const GenerateSchema = {
     create: z.object({
-        urlId: z.string().check(z.minLength(1))
+        photoPath: z.string().min(1)
     }),
-}
+};
 
-export  type GenerateCreateBody = z.infer<typeof GenerateSchema.create>;
+export type GenerateCreateBody = z.infer<typeof GenerateSchema.create>;

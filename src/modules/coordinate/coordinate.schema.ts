@@ -1,13 +1,15 @@
-import {z} from "zod/mini";
+import { z } from "zod";
 
 export const CoordinateSchema = {
     update: z.object({
-        photoTakenAt: z.optional(z.string().check(z.refine(val => !val || !isNaN(Date.parse(val)), {
-            message: "Invalid date format"
-        }))),
-        tiangId: z.optional(z.number()),
-        address: z.optional(z.string()),
+        photoTakenAt: z.string()
+            .refine(val => !val || !isNaN(Date.parse(val)), {
+                message: "Invalid date format"
+            })
+            .optional(),
+        tiangId: z.number().optional(),
+        address: z.string().optional(),
     })
-}
+};
 
-export  type CoordinateUpdateBody = z.infer<typeof CoordinateSchema.update>;
+export type CoordinateUpdateBody = z.infer<typeof CoordinateSchema.update>;
