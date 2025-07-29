@@ -9,7 +9,9 @@ export const CoordinateSchema = {
             .optional(),
         tiangId: z.number().optional(),
         address: z.string().optional(),
-        photoCode: z.string().optional(),
+        photoCode: z.string().optional().nullable(),
+        isAccepted: z.boolean().optional(),
+        isReject: z.boolean().optional(),
     })
 };
 
