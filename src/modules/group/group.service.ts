@@ -79,7 +79,7 @@ export const GroupService = {
             where: {id},
             include: {
                 coordinates: {
-                    where: accepted === null ? {} : {isAccepted: accepted},
+                    where: accepted === null ? {isAccepted: null} : {isAccepted: accepted},
                     orderBy: {photoTakenAt: "asc"},
                     include: {
                         tiang: true,

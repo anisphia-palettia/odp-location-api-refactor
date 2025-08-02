@@ -129,7 +129,7 @@ groupRoute.delete("/:id", async (c) => {
 })
 
 groupRoute.get("/:id/coordinates", async (c) => {
-    const { accepted } = c.req.query();
+    const {accepted} = c.req.query();
     const id = Number(c.req.param("id"));
     if (isNaN(id)) {
         return sendError(c, {
