@@ -36,24 +36,32 @@ export const GroupService = {
     },
 
     async getSummary() {
-        const coordinateCounts = await db.coordinate.groupBy({
+        const acceptedCounts = await db.coordinate.groupBy({
             by: ["groupId"],
             where: {isAccepted: true},
             _count: {id: true},
         });
 
-        const notAcceptedCounts = await db.coordinate.groupBy({
+        const rejectedCounts = await db.coordinate.groupBy({
             by: ["groupId"],
             where: {isAccepted: false},
             _count: {id: true},
         });
 
-        const coordinateMap = new Map(
-            coordinateCounts.map((c) => [c.groupId, c._count.id])
-        );
+        const pendingCounts = await db.coordinate.groupBy({
+            by: ["groupId"],
+            where: {isAccepted: null},
+            _count: {id: true},
+        });
 
-        const notAcceptedMap = new Map(
-            notAcceptedCounts.map((c) => [c.groupId, c._count.id])
+        const acceptedMap = new Map(
+            acceptedCounts.map((c) => [c.groupId, c._count.id])
+        );
+        const rejectedMap = new Map(
+            rejectedCounts.map((c) => [c.groupId, c._count.id])
+        );
+        const pendingMap = new Map(
+            pendingCounts.map((c) => [c.groupId, c._count.id])
         );
 
         const groups = await db.group.findMany();
@@ -62,8 +70,13 @@ export const GroupService = {
             id: group.id,
             name: group.name,
             chatId: group.chatId,
-            totalCoordinates: coordinateMap.get(group.id) ?? 0,
-            totalIsNotAccepted: notAcceptedMap.get(group.id) ?? 0,
+            totalAccepted: acceptedMap.get(group.id) ?? 0,
+            totalRejected: rejectedMap.get(group.id) ?? 0,
+            totalPending: pendingMap.get(group.id) ?? 0,
+            totalCoordinates:
+                (acceptedMap.get(group.id) ?? 0) +
+                (rejectedMap.get(group.id) ?? 0) +
+                (pendingMap.get(group.id) ?? 0),
         }));
 
         results.sort((a, b) => a.name.localeCompare(b.name));
