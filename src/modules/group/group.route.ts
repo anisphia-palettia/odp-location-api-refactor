@@ -1,6 +1,6 @@
 import {Hono} from "hono";
 import {sendError, sendSuccess} from "@/lib/response";
-import {GroupCreateBody, GroupSchema, GroupUpdateBody} from "@/modules/group/group.schema";
+import {GroupCreateBody, GroupSchema} from "@/modules/group/group.schema";
 import {GroupService} from "./group.service"
 import {zodValidate} from "@/middleware";
 import {groupByChatId, groupChats} from "@/services/whatsapp-api";
@@ -129,7 +129,7 @@ groupRoute.delete("/:id", async (c) => {
 })
 
 groupRoute.get("/:id/coordinates", async (c) => {
-    const {accepted} = c.req.query()
+    const { accepted } = c.req.query();
     const id = Number(c.req.param("id"));
     if (isNaN(id)) {
         return sendError(c, {
@@ -138,13 +138,17 @@ groupRoute.get("/:id/coordinates", async (c) => {
         });
     }
 
-    const parsedAccepted = parseBoolean(accepted);
+    let parsedAccepted: boolean | null = null;
 
-    if (parsedAccepted === undefined) {
-        return sendError(c, {
-            message: "Invalid 'accepted' value. Must be 'true' or 'false'.",
-            status: 400,
-        });
+    if (accepted !== undefined) {
+        const parsed = parseBoolean(accepted);
+        if (parsed === undefined) {
+            return sendError(c, {
+                message: "Invalid 'accepted' value. Must be 'true' or 'false'.",
+                status: 400,
+            });
+        }
+        parsedAccepted = parsed;
     }
 
     const groupExist = await GroupService.findById(id);
@@ -155,11 +159,16 @@ groupRoute.get("/:id/coordinates", async (c) => {
         });
     }
 
-    const groupWithCoordinates = await GroupService.getGroupCoordinatesById(id, {accepted: parsedAccepted});
+    const groupWithCoordinates = await GroupService.getGroupCoordinatesById(id, {
+        accepted: parsedAccepted,
+    });
+
     return sendSuccess(c, {
         message: "Success get group coordinates",
         data: groupWithCoordinates,
     });
+
 });
+
 
 export default groupRoute

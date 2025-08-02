@@ -38,19 +38,20 @@ export const GroupService = {
     async getSummary() {
         const coordinateCounts = await db.coordinate.groupBy({
             by: ["groupId"],
-            where: {isAccepted: true, isReject: false},
+            where: {isAccepted: true},
             _count: {id: true},
         });
 
         const notAcceptedCounts = await db.coordinate.groupBy({
             by: ["groupId"],
-            where: {isAccepted: false, isReject: false},
+            where: {isAccepted: false},
             _count: {id: true},
         });
 
         const coordinateMap = new Map(
             coordinateCounts.map((c) => [c.groupId, c._count.id])
         );
+
         const notAcceptedMap = new Map(
             notAcceptedCounts.map((c) => [c.groupId, c._count.id])
         );
@@ -70,20 +71,22 @@ export const GroupService = {
         return results;
     },
 
-    async getGroupCoordinatesById(id: number, {accepted}: { accepted: boolean }) {
+    async getGroupCoordinatesById(
+        id: number,
+        {accepted}: { accepted: boolean | null }
+    ) {
         return db.group.findUnique({
             where: {id},
             include: {
                 coordinates: {
-                    where: {
-                        isAccepted: accepted
-                    },
+                    where: accepted === null ? {} : {isAccepted: accepted},
                     orderBy: {photoTakenAt: "asc"},
                     include: {
-                        tiang: true
-                    }
+                        tiang: true,
+                    },
                 },
             },
         });
-    },
+    }
+
 };
