@@ -100,6 +100,24 @@ export const GroupService = {
                 },
             },
         });
+    },
+
+    async getGroupCoordinates({accepted}: { accepted: boolean | null }
+    ) {
+        return db.group.findMany({
+            where: {
+                show: true,
+            },
+            include: {
+                coordinates: {
+                    where: accepted === null ? {isAccepted: null} : {isAccepted: accepted},
+                    orderBy: {photoTakenAt: "asc"},
+                    include: {
+                        tiang: true,
+                    },
+                }
+            }
+        })
     }
 
 };
