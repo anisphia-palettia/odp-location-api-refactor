@@ -167,7 +167,6 @@ groupRoute.get("/:id/coordinates", async (c) => {
         message: "Success get group coordinates",
         data: groupWithCoordinates,
     });
-
 });
 
 

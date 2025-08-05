@@ -1,8 +1,8 @@
-import { create } from 'xmlbuilder2'
+import {create} from 'xmlbuilder2'
 
-export function generateKmlFromGroups(groups: any[]): string {
-    const kmlDoc = create({ version: '1.0', encoding: 'UTF-8' })
-        .ele('kml', { xmlns: 'http://www.opengis.net/kml/2.2' })
+export function generateKml(groups: any[]): string {
+    const kmlDoc = create({version: '1.0', encoding: 'UTF-8'})
+        .ele('kml', {xmlns: 'http://www.opengis.net/kml/2.2'})
         .ele('Document')
 
     for (const group of groups) {
@@ -32,5 +32,5 @@ export function generateKmlFromGroups(groups: any[]): string {
         }
     }
 
-    return kmlDoc.end({ prettyPrint: true })
+    return kmlDoc.end({prettyPrint: true})
 }

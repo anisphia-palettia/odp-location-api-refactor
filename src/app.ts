@@ -7,7 +7,7 @@ import {serveStatic} from "@hono/node-server/serve-static";
 import {cors} from "hono/cors";
 import tiangRoute from "@/modules/tiang";
 import generateRoute from "@/modules/generate";
-import kmlRoute from "@/modules/kml/kml.route";
+import kmlRoute from "@/modules/kml";
 
 const apiApp = new Hono().basePath("/api");
 apiApp.use(loggerRequest);
