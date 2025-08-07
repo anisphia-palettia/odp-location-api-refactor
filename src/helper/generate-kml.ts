@@ -5,16 +5,18 @@ export function generateKml(groups: any[]): string {
         .ele('kml', {xmlns: 'http://www.opengis.net/kml/2.2'})
         .ele('Document')
 
-    for (const group of groups) {
-        let i = 1
+    for (let gIndex = 0; gIndex < groups.length; gIndex++) {
+        const group = groups[gIndex]
         const folder = kmlDoc.ele('Folder')
-        folder.ele('name').txt(`Tiang teknisi ${i}`)
+        const groupCode = `T${gIndex + 1}` // T1, T2, dst
+        folder.ele('name').txt(groupCode)
 
+        let count = 1
         for (const coord of group.coordinates) {
             if (!coord.lat || !coord.long || !coord.imageName) continue
 
             const placemark = folder.ele('Placemark')
-            placemark.ele('name').txt(`ODP ${i} - ${group.name}`)
+            placemark.ele('name').txt(`${groupCode}-${count}`)
 
             const encodedGroup = encodeURIComponent(group.name)
             const encodedImage = encodeURIComponent(coord.imageName)
@@ -28,7 +30,7 @@ export function generateKml(groups: any[]): string {
                 .ele('coordinates')
                 .txt(`${coord.long},${coord.lat},0`)
 
-            i++
+            count++
         }
     }
 
