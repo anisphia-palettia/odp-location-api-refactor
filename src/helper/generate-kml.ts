@@ -8,7 +8,7 @@ export function generateKml(groups: any[]): string {
     for (const group of groups) {
         let i = 1
         const folder = kmlDoc.ele('Folder')
-        folder.ele('name').txt(group.name)
+        folder.ele('name').txt(`Tiang teknisi ${i}`)
 
         for (const coord of group.coordinates) {
             if (!coord.lat || !coord.long || !coord.imageName) continue
