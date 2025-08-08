@@ -3,16 +3,15 @@ module.exports = {
         {
             name: "odp-location-api",
             script: "dist/server.js",
-            instances: "max",
-            exec_mode: "cluster",
+            instances: "max",       // pakai semua core CPU
+            exec_mode: "cluster",   // cluster mode
             watch: false,
             env: {
-                NODE_ENV: "production",
+                NODE_ENV: "development", // default
             },
-            error_file: "./logs/err.log",
-            out_file: "./logs/out.log",
-            merge_logs: true,
-            max_memory_restart: "512M"
-        }
-    ]
+            env_production: {
+                NODE_ENV: "production",  // untuk --env production
+            },
+        },
+    ],
 };
