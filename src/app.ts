@@ -8,6 +8,7 @@ import {cors} from "hono/cors";
 import tiangRoute from "@/modules/tiang";
 import generateRoute from "@/modules/generate";
 import kmlRoute from "@/modules/kml";
+import xlsxRoute from "@/modules/xlsx";
 
 const apiApp = new Hono().basePath("/api");
 apiApp.use(loggerRequest);
@@ -17,6 +18,7 @@ apiApp.route("/tiang", tiangRoute)
 apiApp.route("/web-hook", webhookWhatsappRoute);
 apiApp.route("/generate", generateRoute);
 apiApp.route("/kml", kmlRoute)
+apiApp.route("xlsx", xlsxRoute)
 
 const app = new Hono();
 app.use("/*", cors());
