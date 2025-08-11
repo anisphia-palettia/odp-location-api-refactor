@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE "coordinate" ADD COLUMN     "photo_taken_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;

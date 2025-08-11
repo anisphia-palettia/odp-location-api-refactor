@@ -36,7 +36,7 @@ webhookWhatsappRoute.post("", async (c) => {
         });
     }
 
-    const group = await GroupService.getByChatId(payload.chatId);
+    const group = await GroupService.getByChatCode(payload.chatId);
     if (!group) {
         logger.warn("Dilewatkan: grup tidak terdaftar");
         return sendSuccess(c, {
@@ -112,7 +112,7 @@ webhookWhatsappRoute.post("", async (c) => {
         });
     }
 
-    if (!coordinates?.lat || !coordinates?.long) {
+    if (!coordinates?.lat || !coordinates?.lng) {
         logger.warn("Dilewatkan: koordinat tidak ditemukan");
         await notifyRecipient(`❌ Koordinat tidak ditemukan dari link berikut:\n${normalizedLink}`, payload);
         await ErrorService.create(normalizedLink, group.id ?? 0);
@@ -154,7 +154,7 @@ webhookWhatsappRoute.post("", async (c) => {
     const normalizedPath = fullPath.replace(/\\/g, "/");
     const imageUrl = `https://odp.tridatafiber.com/${normalizedPath}`;
 
-    const responseText = `✅ Berhasil menyimpan lokasi dan gambar\n\n*Koordinat* : ${coordinates.lat}, ${coordinates.long}\n*Alamat* : ${coordinates.address}\n*UrlId* : ${coordinates.photoCode}\n\n*Gambar* : ${imageUrl}\n\n====================`;
+    const responseText = `✅ Berhasil menyimpan lokasi dan gambar\n\n*Koordinat* : ${coordinates.lat}, ${coordinates.lng}\n*Alamat* : ${coordinates.address}\n*UrlId* : ${coordinates.photoCode}\n\n*Gambar* : ${imageUrl}\n\n====================`;
 
     logger.info("Berhasil menyimpan lokasi dan gambar, notifikasi ke user");
 

@@ -1,6 +1,6 @@
 export type CoordinateData = {
     lat: string;
-    long: string;
+    lng: string;
     address: string;
     photoCode: string | null;
     photoTakenAt: string | Date;

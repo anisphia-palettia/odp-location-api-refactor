@@ -1,4 +1,0 @@
--- AlterTable
-ALTER TABLE "coordinate" ADD COLUMN     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-ADD COLUMN     "is_accepted" BOOLEAN NOT NULL DEFAULT false,
-ADD COLUMN     "updated_at" TIMESTAMP(3);

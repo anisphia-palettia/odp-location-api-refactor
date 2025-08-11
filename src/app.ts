@@ -5,7 +5,7 @@ import {errorHandler, loggerRequest} from "@/middleware";
 import webhookWhatsappRoute from "@/modules/webhook";
 import {serveStatic} from "@hono/node-server/serve-static";
 import {cors} from "hono/cors";
-import tiangRoute from "@/modules/tiang";
+import poleRoute from "@/modules/pole";
 import generateRoute from "@/modules/generate";
 import kmlRoute from "@/modules/kml";
 import xlsxRoute from "@/modules/xlsx";
@@ -14,7 +14,7 @@ const apiApp = new Hono().basePath("/api");
 apiApp.use(loggerRequest);
 apiApp.route("/group", groupRoute);
 apiApp.route("/coordinate", coordinateRoute);
-apiApp.route("/tiang", tiangRoute)
+apiApp.route("/tiang", poleRoute)
 apiApp.route("/web-hook", webhookWhatsappRoute);
 apiApp.route("/generate", generateRoute);
 apiApp.route("/kml", kmlRoute)

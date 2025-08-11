@@ -1,24 +1,24 @@
 import {Hono} from "hono";
-import {TiangService} from "./tiang.service";
+import {PoleService} from "./pole.service";
 import {sendSuccess} from "@/lib/response";
 
-const tiangRoute = new Hono();
+const poleRoute = new Hono();
 
-tiangRoute.get("", async (c) => {
-    const tiangs = await TiangService.getAll();
+poleRoute.get("", async (c) => {
+    const tiangs = await PoleService.getAll();
     return sendSuccess(c, {
         message: "Success get all tiangs",
         data: tiangs
     })
 })
 
-tiangRoute.get("/:id", async (c) => {
+poleRoute.get("/:id", async (c) => {
     const id = c.req.param("id")
-    const tiang = await TiangService.getById(Number(id));
+    const tiang = await PoleService.getById(Number(id));
     return sendSuccess(c, {
         message: "Success get the tiang",
         data: tiang
     })
 })
 
-export default tiangRoute
+export default poleRoute

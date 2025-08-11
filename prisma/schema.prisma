@@ -9,21 +9,22 @@ datasource db {
 }
 
 model Group {
-  id          Int          @id @default(autoincrement()) @map("id")
-  name        String       @map("name")
-  chatId      String       @unique @map("chat_id")
-  show        Boolean      @default(true)
-  coordinates Coordinate[] @relation("group_coordinates")
-  errors      Error[]      @relation("group_erros")
+  id       Int     @id @default(autoincrement()) @map("id")
+  name     String  @map("name")
+  chatCode String  @unique @map("chat_code")
+  show     Boolean @default(true)
 
-  @@map("group")
+  coordinates Coordinate[]
+  errors      Error[]
+
+  @@map("groups")
 }
 
 model Coordinate {
   id           Int       @id @default(autoincrement()) @map("id")
   imageName    String?   @map("image_name")
-  long         String    @map("long")
-  lat          String    @map("lat")
+  lng          Decimal   @map("lng") @db.Decimal(9, 6)
+  lat          Decimal   @map("lat") @db.Decimal(9, 6)
   address      String?   @map("address")
   photoCode    String?   @map("photo_code")
   isAccepted   Boolean?  @map("is_accepted")
@@ -31,30 +32,38 @@ model Coordinate {
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime? @updatedAt @map("updated_at")
 
-  groupId Int?   @map("group_id")
-  group   Group? @relation("group_coordinates", fields: [groupId], references: [id])
-  tiangId Int?
-  tiang   Tiang? @relation(fields: [tiangId], references: [id])
+  groupId Int? @map("group_id")
+  poleId  Int? @map("pole_id")
 
-  @@map("coordinate")
+  pole  Pole?  @relation(fields: [poleId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  group Group? @relation(fields: [groupId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([groupId])
+  @@index([poleId])
+  @@map("coordinates")
 }
 
 model Error {
   id        Int       @id @default(autoincrement()) @map("id")
   url       String    @map("url")
   done      Boolean   @default(false) @map("done")
-  groupId   Int?      @map("group_id")
-  group     Group?    @relation("group_erros", fields: [groupId], references: [id])
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime? @updatedAt @map("updated_at")
 
-  @@map("error")
+  groupId Int?   @map("group_id")
+  group   Group? @relation(fields: [groupId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([groupId])
+  @@map("errors")
 }
 
-model Tiang {
+model Pole {
   id          Int          @id @default(autoincrement()) @map("id")
   name        String       @map("name")
   coordinates Coordinate[]
-  createdAt   DateTime     @default(now()) @map("created_at")
-  updatedAt   DateTime?    @updatedAt @map("updated_at")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+
+  @@map("poles")
 }

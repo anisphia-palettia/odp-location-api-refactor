@@ -54,7 +54,7 @@ export async function getMetadataFromPage(url: string): Promise<CoordinateData |
 
         return lat && lng ? {
             lat,
-            long: lng,
+            lng,
             address: addressText.trim(),
             photoCode: photoCode ?? null,
             photoTakenAt: isoTimestamp ?? null,

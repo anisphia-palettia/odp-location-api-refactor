@@ -16,12 +16,12 @@ export const GroupService = {
         return db.group.findFirst({where: {id}});
     },
 
-    async findByChatId(chatId: string) {
-        return db.group.findFirst({where: {chatId}});
+    async findByChatCode(chatCode: string) {
+        return db.group.findFirst({where: {chatCode}});
     },
 
-    async getByChatId(chatId: string) {
-        return db.group.findUnique({where: {chatId}});
+    async getByChatCode(chatCode: string) {
+        return db.group.findUnique({where: {chatCode}});
     },
 
     async updateById(id: number, data: GroupUpdateInput) {
@@ -69,7 +69,7 @@ export const GroupService = {
         const results = groups.map((group) => ({
             id: group.id,
             name: group.name,
-            chatId: group.chatId,
+            chatCode: group.chatCode,
             totalAccepted: acceptedMap.get(group.id) ?? 0,
             totalRejected: rejectedMap.get(group.id) ?? 0,
             totalPending: pendingMap.get(group.id) ?? 0,
@@ -95,7 +95,7 @@ export const GroupService = {
                     where: accepted === null ? {isAccepted: null} : {isAccepted: accepted},
                     orderBy: {photoTakenAt: "asc"},
                     include: {
-                        tiang: true,
+                        pole: true,
                     },
                 },
             },
@@ -113,7 +113,7 @@ export const GroupService = {
                     where: accepted === null ? {isAccepted: null} : {isAccepted: accepted},
                     orderBy: {photoTakenAt: "asc"},
                     include: {
-                        tiang: true,
+                        pole: true,
                     },
                 }
             }

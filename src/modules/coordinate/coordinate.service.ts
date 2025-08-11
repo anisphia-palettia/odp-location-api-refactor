@@ -15,14 +15,15 @@ export const CoordinateService = {
         return db.coordinate.findUnique({where: {id}});
     },
 
+
     async create(data: CoordinateCreateInput, imageName: string, groupId: number) {
         return db.coordinate.create({
             data: {
                 imageName,
                 groupId,
                 address: data.address,
-                lat: data.lat,
-                long: data.long,
+                lat: new Prisma.Decimal(parseFloat(data.lat as string).toFixed(6)),
+                lng: new Prisma.Decimal(parseFloat(data.lng as string).toFixed(6)),
                 photoCode: data.photoCode,
                 photoTakenAt: data.photoTakenAt,
             },

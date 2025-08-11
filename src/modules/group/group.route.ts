@@ -24,7 +24,7 @@ groupRoute.post(
     async (c) => {
         const {chatId} = c.req.valid("json") as GroupCreateBody;
 
-        const groupExist = await GroupService.findByChatId(chatId);
+        const groupExist = await GroupService.findByChatCode(chatId);
 
         if (groupExist) {
             await GroupService.updateById(groupExist.id, {show: true})
