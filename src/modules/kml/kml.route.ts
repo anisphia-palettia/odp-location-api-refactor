@@ -8,6 +8,8 @@ const kmlRoute = new Hono()
 kmlRoute.get('/', async (c) => {
     const groups = await GroupService.getGroupCoordinates({accepted: true})
 
+    console.log(groups)
+
     const kmlString = generateKml(groups)
 
     return c.body(kmlString, 200, {

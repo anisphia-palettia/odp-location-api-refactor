@@ -1,6 +1,14 @@
 import {create} from 'xmlbuilder2'
+import {Prisma} from "@/generated/prisma";
 
-export function generateKml(groups: any[]): string {
+type Groups = Prisma.GroupGetPayload<{
+    include: {
+        coordinates: true
+    }
+}>[]
+
+
+export function generateKml(groups: Groups): string {
     const kmlDoc = create({version: '1.0', encoding: 'UTF-8'})
         .ele('kml', {xmlns: 'http://www.opengis.net/kml/2.2'})
         .ele('Document')
@@ -13,7 +21,7 @@ export function generateKml(groups: any[]): string {
 
         let count = 1
         for (const coord of group.coordinates) {
-            if (!coord.lat || !coord.long || !coord.imageName) continue
+            if (!coord.lat || !coord.lng || !coord.imageName) continue
 
             const placemark = folder.ele('Placemark')
             placemark.ele('name').txt(`${groupCode}-${count}`)
@@ -28,7 +36,7 @@ export function generateKml(groups: any[]): string {
 
             placemark.ele('Point')
                 .ele('coordinates')
-                .txt(`${coord.long},${coord.lat},0`)
+                .txt(`${coord.lng},${coord.lat},0`)
 
             count++
         }
