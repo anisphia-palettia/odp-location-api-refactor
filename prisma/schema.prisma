@@ -21,14 +21,16 @@ model Group {
 }
 
 model Coordinate {
-  id           Int       @id @default(autoincrement()) @map("id")
-  imageName    String?   @map("image_name")
-  lng          Decimal   @map("lng") @db.Decimal(9, 6)
-  lat          Decimal   @map("lat") @db.Decimal(9, 6)
-  address      String?   @map("address")
-  photoCode    String?   @map("photo_code")
-  isAccepted   Boolean?  @map("is_accepted")
+  id         Int      @id @default(autoincrement()) @map("id")
+  imageName  String?  @map("image_name")
+  lng        Decimal  @map("lng") @db.Decimal(9, 6)
+  lat        Decimal  @map("lat") @db.Decimal(9, 6)
+  address    String?  @map("address")
+  photoCode  String?  @map("photo_code")
+  isAccepted Boolean? @map("is_accepted")
+
   photoTakenAt DateTime  @default(now()) @map("photo_taken_at")
+  reportedAt   DateTime? @map("reported_at")
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime? @updatedAt @map("updated_at")
 
