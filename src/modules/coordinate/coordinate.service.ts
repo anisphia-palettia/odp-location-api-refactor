@@ -35,5 +35,17 @@ export const CoordinateService = {
             where: {id},
             data
         })
-    }
+    },
+
+    async getCoordinatesByGroupId(
+        groupId: number,
+        {accepted = null}: { accepted?: boolean | null }
+    ) {
+        return db.coordinate.findMany({
+            where: {groupId, isAccepted: accepted},
+            include: {
+                pole: true,
+            }
+        });
+    },
 }

@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const GroupSchema = {
     create: z.object({
-        chatId: z.string().min(1)
+        chatCode: z.string().min(1)
     }),
     update: z.object({
         show: z.boolean().optional()

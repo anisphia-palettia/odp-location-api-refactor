@@ -7,7 +7,7 @@ export const CoordinateSchema = {
                 message: "Invalid date format"
             })
             .optional(),
-        tiangId: z.number().optional(),
+        poleId: z.number().optional(),
         address: z.string().optional(),
         photoCode: z.string().optional().nullable(),
         isAccepted: z.boolean().optional(),

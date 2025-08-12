@@ -84,24 +84,6 @@ export const GroupService = {
         return results;
     },
 
-    async getGroupCoordinatesById(
-        id: number,
-        {accepted}: { accepted: boolean | null }
-    ) {
-        return db.group.findUnique({
-            where: {id},
-            include: {
-                coordinates: {
-                    where: accepted === null ? {isAccepted: null} : {isAccepted: accepted},
-                    orderBy: {photoTakenAt: "asc"},
-                    include: {
-                        pole: true,
-                    },
-                },
-            },
-        });
-    },
-
     async getGroupCoordinates({accepted}: { accepted: boolean | null }
     ) {
         return db.group.findMany({
@@ -117,6 +99,11 @@ export const GroupService = {
                     },
                 }
             }
+        })
+    },
+    async getGroupById(id: number) {
+        return db.group.findUnique({
+            where: {id}
         })
     }
 

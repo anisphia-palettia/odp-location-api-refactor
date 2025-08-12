@@ -7,6 +7,8 @@ import {groupByChatId, groupChats} from "@/services/whatsapp-api";
 import {Prisma} from "@/generated/prisma";
 import GroupUpdateInput = Prisma.GroupUpdateInput;
 import {parseBoolean} from "@/helper/parse-boolean";
+import {CoordinateService} from "@/modules/coordinate";
+import {HTTPException} from "hono/http-exception";
 
 const groupRoute = new Hono()
 
@@ -22,9 +24,9 @@ groupRoute.post(
     "/",
     zodValidate("json", GroupSchema.create),
     async (c) => {
-        const {chatId} = c.req.valid("json") as GroupCreateBody;
+        const {chatCode} = c.req.valid("json") as GroupCreateBody;
 
-        const groupExist = await GroupService.findByChatCode(chatId);
+        const groupExist = await GroupService.findByChatCode(chatCode);
 
         if (groupExist) {
             await GroupService.updateById(groupExist.id, {show: true})
@@ -34,7 +36,7 @@ groupRoute.post(
             });
         }
 
-        const response = await groupByChatId(chatId)
+        const response = await groupByChatId(chatCode)
             .then(data => data.data)
             .catch(() => null);
 
@@ -46,7 +48,7 @@ groupRoute.post(
         }
 
         const data = {
-            chatId,
+            chatCode,
             name: response.name,
         };
 
@@ -69,7 +71,7 @@ groupRoute.get("/summary", async (c) => {
 groupRoute.get("/whatsapp-group-chats", async (c) => {
     const groups = await GroupService.getAll()
     const response = await groupChats().then(data => data.data);
-    const existingChatIds = new Set(groups.map(g => g.chatId));
+    const existingChatIds = new Set(groups.map(g => g.chatCode));
     const filteredGroups = response?.filter(g => !existingChatIds.has(g.id));
 
     return sendSuccess(c, {
@@ -128,6 +130,18 @@ groupRoute.delete("/:id", async (c) => {
     })
 })
 
+groupRoute.get("/:id", async (c) => {
+    const id = c.req.param("id")
+    const group = await GroupService.getGroupById(Number(id))
+    if (!group) {
+        throw new HTTPException(404, {message: "Group not found"})
+    }
+    return sendSuccess(c, {
+        message: "Success get the group",
+        data: group
+    })
+})
+
 groupRoute.get("/:id/coordinates", async (c) => {
     const {accepted} = c.req.query();
     const id = Number(c.req.param("id"));
@@ -159,7 +173,7 @@ groupRoute.get("/:id/coordinates", async (c) => {
         });
     }
 
-    const groupWithCoordinates = await GroupService.getGroupCoordinatesById(id, {
+    const groupWithCoordinates = await CoordinateService.getCoordinatesByGroupId(id, {
         accepted: parsedAccepted,
     });
 

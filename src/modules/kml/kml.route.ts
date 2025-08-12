@@ -19,7 +19,7 @@ kmlRoute.get('/', async (c) => {
 kmlRoute.get("/:groupId", async (c) => {
     const groupId = Number(c.req.param("groupId"))
 
-    const group = await GroupService.getGroupCoordinatesById(groupId, {accepted: true})
+    const group = await GroupService.getCoordinatesByGroupId(groupId, {accepted: true})
 
     if (!group) {
         throw new HTTPException(404, {message: "Group not found"})

@@ -14,11 +14,11 @@ const apiApp = new Hono().basePath("/api");
 apiApp.use(loggerRequest);
 apiApp.route("/group", groupRoute);
 apiApp.route("/coordinate", coordinateRoute);
-apiApp.route("/tiang", poleRoute)
+apiApp.route("/pole", poleRoute)
 apiApp.route("/web-hook", webhookWhatsappRoute);
 apiApp.route("/generate", generateRoute);
 apiApp.route("/kml", kmlRoute)
-apiApp.route("xlsx", xlsxRoute)
+apiApp.route("/xlsx", xlsxRoute)
 
 const app = new Hono();
 app.use("/*", cors());
