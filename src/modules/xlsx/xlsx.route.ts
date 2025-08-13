@@ -16,7 +16,7 @@ function safeSheetName(raw: string, used: Set<string>) {
 }
 
 xlsxRoute.get('/', async (c) => {
-    const groups = await GroupService.getGroupCoordinates({ accepted: true });
+    const groups = await GroupService.getCoordinatesByGroupId({ accepted: true });
     const wb = new ExcelJS.Workbook();
 
     const usedNames = new Set<string>();

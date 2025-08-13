@@ -2,6 +2,7 @@ import {db} from "@/services/db";
 import {Prisma} from "@/generated/prisma";
 import GroupCreateInput = Prisma.GroupCreateInput;
 import GroupUpdateInput = Prisma.GroupUpdateInput;
+import {GetCoordinatesParams} from "@/modules/group/group.types";
 
 export const GroupService = {
     async getAll() {
@@ -84,27 +85,53 @@ export const GroupService = {
         return results;
     },
 
-    async getGroupCoordinates({accepted}: { accepted: boolean | null }
-    ) {
-        return db.group.findMany({
-            where: {
-                show: true,
-            },
-            include: {
-                coordinates: {
-                    where: accepted === null ? {isAccepted: null} : {isAccepted: accepted},
-                    orderBy: {photoTakenAt: "asc"},
-                    include: {
-                        pole: true,
-                    },
-                }
-            }
-        })
-    },
     async getGroupById(id: number) {
         return db.group.findUnique({
             where: {id}
         })
-    }
+    },
 
+    async getCoordinatesByGroupId(params: GetCoordinatesParams
+    ) {
+        const {groupId, accepted, take = 20, cursor} = params;
+
+        const coordWhere: Prisma.CoordinateWhereInput = {
+            groupId,
+            ...(accepted === null ? {isAccepted: null} : {isAccepted: accepted})
+        }
+
+        const rows = await db.coordinate.findMany({
+            where: coordWhere,
+            orderBy: [{photoTakenAt: "asc"}, {id: "asc"}],
+            take: take + 1,
+            ...(cursor ? {cursor: {id: cursor}, skip: 1} : {}),
+            include: {
+                pole: {
+                    select: {
+                        id: true,
+                        name: true,
+                    }
+                }
+            }
+        })
+
+        const prevCount = cursor
+            ? await db.coordinate.count({
+                where: {...coordWhere, id: {lt: cursor}},
+            })
+            : 0;
+
+        const items = rows.slice(0, take);
+        const hasNextPage = rows.length > take;
+        const hasPreviousPage = prevCount > 0;
+        const nextCursor = hasNextPage ? items[items.length - 1].id : null;
+
+        const total = await db.coordinate.count({where: coordWhere});
+
+        return {
+            items,
+            pageInfo: {take, hasNextPage, hasPreviousPage, nextCursor},
+            total,
+        };
+    }
 };

@@ -6,7 +6,7 @@ import {HTTPException} from "hono/http-exception";
 const kmlRoute = new Hono()
 
 kmlRoute.get('/', async (c) => {
-    const groups = await GroupService.getGroupCoordinates({accepted: true})
+    const groups = await GroupService.getCoordinatesByGroupId({accepted: true})
 
     const kmlString = generateKml(groups)
 

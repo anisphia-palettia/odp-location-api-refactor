@@ -1,6 +1,12 @@
 import {Hono} from "hono";
 import {sendError, sendSuccess} from "@/lib/response";
-import {GroupCreateBody, GroupSchema} from "@/modules/group/group.schema";
+import {
+    GroupCreateBody, GroupParamCoordinateByGroupId,
+    GroupParamSchema,
+    GroupQueryCoordinateByGroupId,
+    GroupQuerySchema,
+    GroupSchema
+} from "@/modules/group/group.schema";
 import {GroupService} from "./group.service"
 import {zodValidate} from "@/middleware";
 import {groupByChatId, groupChats} from "@/services/whatsapp-api";
@@ -142,46 +148,26 @@ groupRoute.get("/:id", async (c) => {
     })
 })
 
-groupRoute.get("/:id/coordinates", async (c) => {
-    const {accepted} = c.req.query();
-    const id = Number(c.req.param("id"));
-    if (isNaN(id)) {
-        return sendError(c, {
-            message: "Invalid group id",
-            status: 400,
+groupRoute.get("/:groupId/coordinates",
+    zodValidate("query", GroupQuerySchema.coordinateByGroupId),
+    zodValidate("param", GroupParamSchema.coordinateByGroupId),
+    async (c) => {
+        const {groupId} = c.req.valid("param") as GroupParamCoordinateByGroupId;
+        const {accepted, take, cursor} = c.req.valid("query") as GroupQueryCoordinateByGroupId;
+
+        const data = await GroupService.getCoordinatesByGroupId({
+            groupId,
+            accepted,
+            take,
+            cursor: cursor ?? null,
         });
+
+        return sendSuccess(c, {
+            message: "Success get coordinates by group id",
+            data
+        })
     }
-
-    let parsedAccepted: boolean | null = null;
-
-    if (accepted !== undefined) {
-        const parsed = parseBoolean(accepted);
-        if (parsed === undefined) {
-            return sendError(c, {
-                message: "Invalid 'accepted' value. Must be 'true' or 'false'.",
-                status: 400,
-            });
-        }
-        parsedAccepted = parsed;
-    }
-
-    const groupExist = await GroupService.findById(id);
-    if (!groupExist) {
-        return sendError(c, {
-            message: "Group not found",
-            status: 404,
-        });
-    }
-
-    const groupWithCoordinates = await CoordinateService.getCoordinatesByGroupId(id, {
-        accepted: parsedAccepted,
-    });
-
-    return sendSuccess(c, {
-        message: "Success get group coordinates",
-        data: groupWithCoordinates,
-    });
-});
+);
 
 
 export default groupRoute
